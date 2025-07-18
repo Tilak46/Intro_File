@@ -7,8 +7,10 @@ export default function App() {
   const [index, setIndex] = useState(0);
   const [text, setText] = useState("");
   const [letterIndex, setLetterIndex] = useState(0);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const audioRef = useRef(null);
 
+  // Typewriter effect
   useEffect(() => {
     const word = words[index % words.length];
     if (letterIndex < word.length) {
@@ -27,6 +29,7 @@ export default function App() {
     }
   }, [letterIndex, index]);
 
+  // Particle animation on mouse move
   useEffect(() => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -84,19 +87,34 @@ export default function App() {
     };
   }, []);
 
-  const handlePlayMusic = () => {
+  // Play/Pause music
+  const toggleMusic = () => {
     if (audioRef.current) {
-      audioRef.current.volume = 0.4;
-      audioRef.current.play();
+      if (audioRef.current.paused) {
+        audioRef.current.volume = 0.4;
+        audioRef.current.play();
+        setIsMusicPlaying(true);
+      } else {
+        audioRef.current.pause();
+        setIsMusicPlaying(false);
+      }
     }
   };
 
   return (
-    <div
-      className="relative flex h-screen w-full flex-col items-center justify-center bg-gradient-to-br from-sky-800 via-indigo-700 to-purple-800 text-white transition-colors duration-500 dark:from-gray-900 dark:via-gray-800 dark:to-black"
-      onClick={handlePlayMusic}
-    >
-      <audio ref={audioRef} src="../public/bgaudio.mp3 " />
+    <div className="relative flex h-screen w-full flex-col items-center justify-center bg-gradient-to-br from-sky-800 via-indigo-700 to-purple-800 text-white transition-colors duration-500 dark:from-gray-900 dark:via-gray-800 dark:to-black">
+      {/* 🔊 Background Music */}
+      <audio ref={audioRef} src="/bgaudio.mp3" loop />
+
+      {/* 🎵 Toggle Music Button */}
+      <motion.button
+        className="absolute right-6 top-6 z-50 flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-black shadow-lg backdrop-blur-sm transition hover:bg-white"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={toggleMusic}
+      >
+        {isMusicPlaying ? "🔊" : "🔇"}
+      </motion.button>
 
       {/* ✨ Animated floating emojis */}
       <motion.div
