@@ -3,11 +3,6 @@ import StarRating from "./StarRating";
 import { useMovies } from "./useMovies";
 import { useLocalStorageState } from "./useLocalStorageState";
 import { useKey } from "./useKey";
-import { AnimatedBackground } from "./AnimatedBackground";
-import { Logo } from "./Logo";
-import { UserIcon } from "./UserIcon";
-import { Icon } from "./Icon";
-import { MovieCard } from "./MovieCard";
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -37,74 +32,41 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden text-gray-100">
-      <AnimatedBackground />
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6 text-gray-100">
+      <div className="mx-auto max-w-7xl">
+        <Navbar>
+          <Logo />
+          <Search query={query} setQuery={setQuery} />
+          <NumResult movies={movies} />
+        </Navbar>
 
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Premium Navbar */}
-        <nav className="mb-8 rounded-2xl border border-gray-700/30 bg-gray-800/50 p-4 shadow-xl backdrop-blur-lg">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Logo />
-              <h1 className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-2xl font-bold text-transparent">
-                Popcorn<span className="text-white">Diary</span>
-              </h1>
-            </div>
-
-            <Search query={query} setQuery={setQuery} />
-
-            <div className="flex items-center space-x-6">
-              <NumResult movies={movies} />
-              <button className="rounded-full bg-gradient-to-r from-purple-600 to-pink-500 p-2 shadow-lg transition-transform hover:scale-110">
-                <UserIcon className="size-5" />
-              </button>
-            </div>
-          </div>
-        </nav>
-
-        {/* 3D Card Layout */}
-        <main className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <Box>
-              {isLoading ? (
-                <Loader />
-              ) : error ? (
-                <ErrorMessage message={error} />
-              ) : (
-                <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2">
-                  {movies?.map((movie) => (
-                    <MovieCard
-                      key={movie.imdbID}
-                      movie={movie}
-                      onSelectMovie={handleSelectMovie}
-                    />
-                  ))}
-                </div>
-              )}
-            </Box>
-          </div>
-
-          <div className="lg:col-span-1">
-            <Box>
-              {selectedId ? (
-                <MovieDetails
-                  selectedId={selectedId}
-                  onCloseMovie={handleCloseMovie}
-                  onAddWatched={handleAddWatched}
+        <Main>
+          <Box>
+            {isLoading && <Loader />}
+            {!isLoading && !error && (
+              <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
+            )}
+            {error && <ErrorMessage message={error} />}
+          </Box>
+          <Box>
+            {selectedId ? (
+              <MovieDetails
+                selectedId={selectedId}
+                onCloseMovie={handleCloseMovie}
+                onAddWatched={handleAddWatched}
+                watched={watched}
+              />
+            ) : (
+              <>
+                <WatchedSummary watched={watched} />
+                <WatchedMovieList
                   watched={watched}
+                  onDeleteMovie={handleDeleteMovie}
                 />
-              ) : (
-                <>
-                  <WatchedSummary watched={watched} />
-                  <WatchedMovieList
-                    watched={watched}
-                    onDeleteMovie={handleDeleteMovie}
-                  />
-                </>
-              )}
-            </Box>
-          </div>
-        </main>
+              </>
+            )}
+          </Box>
+        </Main>
       </div>
     </div>
   );
@@ -143,16 +105,16 @@ function Navbar({ children }) {
   );
 }
 
-// function Logo() {
-//   return (
-//     <div className="flex items-center gap-3">
-//       <span className="text-4xl">🍿</span>
-//       <h1 className="bg-gradient-to-r from-yellow-300 to-yellow-100 bg-clip-text text-2xl font-bold text-transparent">
-//         PopcornDiary
-//       </h1>
-//     </div>
-//   );
-// }
+function Logo() {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="text-4xl">🍿</span>
+      <h1 className="bg-gradient-to-r from-yellow-300 to-yellow-100 bg-clip-text text-2xl font-bold text-transparent">
+        PopcornDiary
+      </h1>
+    </div>
+  );
+}
 
 function Search({ query, setQuery }) {
   const inputEl = useRef(null);
