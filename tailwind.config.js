@@ -1,21 +1,17 @@
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+module.exports = {
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    fontFamily: {
-      sans: "Roboto Mono, monospace",
-    },
     extend: {
       colors: {
-        pizza: "#123345",
-      },
-      animation: {
-        glow: "pulse 2s infinite ease-in-out",
-      },
-      height: {
-        screen: "100dvh",
+        primary: "#6741d9",
+        "primary-light": "#7950f2",
+        "background-100": "#343a40",
+        "background-500": "#2b3035",
+        "background-900": "#212529",
+        red: "#fa5252",
+        "red-dark": "#e03131",
       },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };
